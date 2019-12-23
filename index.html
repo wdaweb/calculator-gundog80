@@ -1,25 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Document</title>
+	<title>卜克計算機</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 	<style>
 		#game {
-			width: 1000px;
+			width: 140vmax;
+		}
+		#cardArea {
+			/* width: 80vmax; */
+		}
+		#computerArea {
+			/* width: 60vmax; */
+			height:90vh;
 		}
 
 		.pCard {
-			width: 100px;
-			height: 180px;
+			/* width: 100px; */
+			width: 90%;
+			height:180px;
 			/* 設定子元素在 3D 空間內 */
 			transform-style: preserve-3d;
 			position: relative;
 			transition: transform 0.5s;
-			float: left;
-			margin: 10px;
+			/* float: left; */
+			/* box-sizing:border-box; */
+			/* margin: 10px; */
 			
 		}
 
@@ -46,12 +55,68 @@
 			position: absolute;
 			transform: rotateY(180deg);
 		}
+
+		#inputTable tr{
+			font-size: 4em;
+		}
+		#inputTable tr{
+			height:15vh;
+		}
+		#itemArea{
+			width:80%;
+		}
+		#itemArea>div{
+			width:15%;
+		}
 	</style>
 </head>
 <body>
-	<div class="container">
-		<div class=col-7 id="game"></div>
-		<div class="col-5 bg-red" ></div>
+	<div class="container" id=game>
+		<div class=row>
+			<div class=col-7 id="cardArea">
+				<div class="container">
+					<div class=row>	</div>
+				</div>
+			</div>
+			<div class="col-5 bg-red computerArea" >
+
+				<table id=inputTable style="width:100%;" border=1>
+					<tr></tr>
+					<tr>
+						<td style="width:70%; text-align: right;">
+						<div id=drop style="width:30%; position: relative; right:70%; display:inline-block;">
+							?
+						</div>
+						</td>
+						<td style="width:30%;"></td>
+					</tr>
+					<tr style="height:5vh;"></tr>
+					<tr>
+						<td id=input></td>
+						<td>= <span id=topic>?</span> </td>
+					</tr>
+					<tr>
+						<td></td>
+						<td style="text-align: center;">
+							<div id=submit style="font-size: 0.4em;border-radius: 0.6em;height:1.8em; border: 3px solid;background-color: bisque;">
+								送出答案
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div id=itemArea style="position:fixed;bottom: 10px;right:10px;width:30%;display:flex;flex-direction: row-reverse;flex-wrap:wrap-reverse">
+				<div>1</div>
+				<div>2</div>
+				<div>3</div>
+				<div>4</div>
+				<div>5</div>
+				<div>6</div>
+				<div>item</div>
+				<div>item</div>
+			</div>
+			
+		</div>
 	</div>
 	<script src="./jquery-3.4.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
@@ -59,24 +124,45 @@
 		let rand = function(n) {
 			return Math.floor(Math.random()*n)
 		}
-		let charArr=['0','1','2','3','4','5','6','7','8','9','+','-','*','/']
+		let charArr=['0','1','2','3','4','5','6','7','8','9','+','-','*','/','c','g']
 		let gameCard=[];
-		for(let i=0;i<8;i++){
+		$("#drop").html(rand(10))
+		$("#topic").text(rand(10))
+		let topic=$("#topic").text()
+		let getAnswer=function(){
+			let answer = eval($('#input').text())
+			console.log(answer)
+			console.log(topic)
+			if(answer==topic){
+				alert("You WIN")
+			}else{
+				alert("很抱歉答錯了")
+			}
+
+		}
+		$('#submit').on('click',getAnswer)
+		for(let i=0;i<10;i++){
 			//抽出遊戲用牌
-			let temp=rand(14);
-			temp=charArr[temp];
-			if($.inArray(temp,gameCard)){
+			let temp=rand(13)+1;
+			// temp=charArr[temp];
+			console.log("inArray")
+			console.log($.inArray(temp,gameCard))
+			if($.inArray(temp,gameCard)<0){
 				gameCard[gameCard.length]=temp;
 			}else{
 				i--;
 			}
 		}
+		console.log(gameCard)
 		$(function(){
-			// 產生 16 張卡片
-			for(let i=0;i<16;i++) {
-				$("#game").append(/*html*/`<div class="pCard">
-						<div class="front"></div>
-						<div class="back"></div>
+
+			// 產生 20 張卡片
+			for(let i=0;i<20;i++) {
+				$("#cardArea .row").append(/*html*/`<div class="col-3">
+						<div class="pCard">
+							<div class="front"></div>
+							<div class="back"></div>
+						</div>
 					</div>
 				`)
 			}
@@ -91,12 +177,14 @@
 				//     }
 	
 				console.log(gameCard);
-				let add = i % ( $(".pCard").length / 2 ) + 1;
-				$(".pCard").eq(i).find(".back").css("background-image", `url(./card/space.jpg)`);
-				$(".pCard").eq(i).attr("data-card", add).attr("data-char",gameCard[add]);
+				let add = i % ( $(".pCard").length / 2 ) ;
+				$(".pCard").eq(i).find(".back").css("background-image", `url(./card/card-${gameCard[add]}.jpg)`);
+				$(".pCard").eq(i).attr("data-card", add).attr("data-char",charArr[gameCard[add]]);
 				// 隨機取一張牌，將他放在目前迴圈跑到的牌後
+/*測試用不換*/				// let target = Math.floor( Math.random()*$(".pCard").length );
+/*測試用不換*/				// $(".pCard").eq(target).parent().insertAfter( $(".pCard").eq(i).parent() );
 				let target = Math.floor( Math.random()*$(".pCard").length );
-				$(".pCard").eq(target).insertAfter( $(".pCard").eq(i) );
+				$(".pCard").eq(target).parent().insertAfter( $(".pCard").eq(i).parent() );
 			}
 
 			$(".pCard").on("click", function(){
@@ -107,14 +195,31 @@
 
 				// 如果翻開兩張了
 				if($(".open").length === 2 ) {
-					// 一秒後翻回來
+					// 移動掉落數字
+					let temp1=$("#drop").parent().css("width");
+					temp1=parseInt(temp1) /10;
+// /*測試用*/					temp1=parseInt(temp1) /3;
+					let temp2=$("#drop").css("right") 
+					temp2=parseInt(temp2) -temp1;
+					$("#drop").animate({right:`${temp2}`})
+					// 一秒後翻回來，並作掉落動作
 					setTimeout(()=>{
 						$(".open").removeClass("open");
+					if (temp2<10){
+						$("#input").append($("#drop").html())
+						$("#drop").html(rand(10))
+						$("#drop").css("right",temp1*8)
+// /*測試用*/						$("#drop").css("right",temp1*3)
+					}
+
 					}, 1000)
 
-					// 如果兩張一樣，淡出
+					// 如果兩張一樣，淡出, 並加入數字
 					if($(".open").eq(0).attr("data-card") === $(".open").eq(1).attr("data-card") ){
+						let temp=$(".open").eq(0).attr("data-char");
+						$("#input").append(temp)
 						$(".open").fadeTo(1000, 0).addClass(".clear");
+
 					}
 				}
 				
@@ -125,6 +230,7 @@
 					}, 500);
 				}
 			})
+
 		})
 	</script>
 </body>
