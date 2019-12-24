@@ -39,7 +39,7 @@
 		.front {
 			width: 100%;
 			height: 100%;
-			background-image: url(./card/Red_back.jpg);
+			background-image: url(./card/blue_back.jpg);
 			background-position: center;
 			background-size: contain;
 			background-repeat: no-repeat;
@@ -64,9 +64,16 @@
 		}
 		#itemArea{
 			width:80%;
+			text-align: center;
 		}
 		#itemArea>div{
 			width:15%;
+		}
+		.item{
+			background-color:beige;
+		}
+		.item>img{
+			width:100%;
 		}
 	</style>
 </head>
@@ -112,8 +119,8 @@
 				<div>4</div>
 				<div>5</div>
 				<div>6</div>
-				<div>item</div>
-				<div>item</div>
+				<div class="item" data-char=c><img src="./card/card-14..jpg" alt=""></div>
+				<div class="item" data-char=g><img src="./card/card-15..jpg" alt=""></div>
 			</div>
 			
 		</div>
@@ -129,6 +136,8 @@
 		$("#drop").html(rand(10))
 		$("#topic").text(rand(10))
 		let topic=$("#topic").text()
+
+		//核對答案
 		let getAnswer=function(){
 			let answer = eval($('#input').text())
 			console.log(answer)
@@ -141,6 +150,33 @@
 
 		}
 		$('#submit').on('click',getAnswer)
+
+		//輸入字元
+		let addChar=function (char){
+			// if(char=='c'){
+
+			// }ifelse(char=='g'){
+
+			// }ifelse(){
+
+			// }ifelse...
+			$("#input").append(char);
+		}
+		
+		
+		
+		//使用道具
+		let useItem=function(){
+			console.log(this)
+			// console.log(item)
+			addChar($(this).attr('data-char'));
+			$(this).remove();
+			
+		}
+
+	
+		$(".item").on('click',useItem)
+
 		for(let i=0;i<10;i++){
 			//抽出遊戲用牌
 			let temp=rand(13)+1;
