@@ -126,8 +126,8 @@
 				<div>4</div>
 				<div>5</div>
 				<div>6</div>
-				<div class="item" data-char=c><img src="./card/card-14..jpg" alt=""></div>
-				<div class="item" data-char=g><img src="./card/card-15..jpg" alt=""></div>
+				<div class="item" data-char=c><img src="./card/card-14.jpg" alt=""></div>
+				<div class="item" data-char=g><img src="./card/card-15.jpg" alt=""></div>
 			</div>
 			
 		</div>
@@ -195,7 +195,7 @@
 			addChar($(this).attr('data-char'));
 			$(this).remove();
 		}
-		$(".item").on('click',useItem)
+		$("#itemArea").on('click',".item",useItem)
 
 		for(let i=0;i<10;i++){
 		//抽出遊戲用牌
@@ -223,10 +223,12 @@
 		console.log(itemSite)
 
 		let getItem=function(){
+			let charNum=rand(charArr.length)
+			let char=charArr[charNum]
 			console.log("hi getItem")
 			$("#itemArea").append(
 				`
-				<div class="item" data-char=c><img src="./card/card-14..jpg" alt=""></div>
+				<div class="item" data-char=${char}><img src="./card/card-${charNum}.jpg" alt=""></div>
 				`)
 		}
 
@@ -310,7 +312,12 @@
 						let temp=$(".open").eq(0).attr("data-char");
 						// $("#input").append(temp)
 						addChar(temp)
+						if($(".open").eq(0).attr('data-item')==1){
 						getItem();
+						}
+						if($(".open").eq(1).attr('data-item')==1){
+						getItem();
+						}
 						$(".open").fadeTo(1000, 0).addClass(".clear");
 
 					}
