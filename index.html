@@ -44,6 +44,7 @@
 			background-size: contain;
 			background-repeat: no-repeat;
 			position: absolute;
+			/* opacity:0.5; */
 		}
 
 		.back {
@@ -74,6 +75,12 @@
 		}
 		.item>img{
 			width:100%;
+		}
+		.itemMark>img{
+			position:absolute;
+			width:100%;
+			z-index: 10;
+
 		}
 	</style>
 </head>
@@ -132,55 +139,67 @@
 			return Math.floor(Math.random()*n)
 		}
 		let charArr=['0','1','2','3','4','5','6','7','8','9','+','-','*','/','c','g']
-		let gameCard=[];
-		$("#drop").html(rand(10))
-		$("#topic").text(rand(10))
-		let topic=$("#topic").text()
+		let gameCard=[];  //遊戲用牌組
+		let itemSite=[]
+		$("#drop").html(rand(10));
+		$("#topic").text(rand(10));
+		let topic=$("#topic").text();
+		$("#input").html("0");
 
-		//核對答案
 		let getAnswer=function(){
-			let answer = eval($('#input').text())
-			console.log(answer)
-			console.log(topic)
+		//核對答案函式
+			let answer = eval($('#input').text());
+			console.log(answer);
+			console.log(topic);
 			if(answer==topic){
-				alert("You WIN")
+				alert("You WIN");
 			}else{
-				alert("很抱歉答錯了")
+				alert("很抱歉答錯了");
 			}
-
 		}
-		$('#submit').on('click',getAnswer)
+		$('#submit').on('click',getAnswer);
 
-		//輸入字元
 		let addChar=function (char){
-			// if(char=='c'){
-
-			// }ifelse(char=='g'){
-
-			// }ifelse(){
-
-			// }ifelse...
+		//輸入字元函式
+			let str=$("#input").text()
+			console.log(str)
+			console.log(str.substr(str.length-1,1))
+			if(char=='c'){
+				$("#input").html("0");
+			}else if(char=='g'){
+				$(".front").css("opacity","0.5")
+				console.log($(".front"))
+				setTimeout(()=>{
+					$(".front").css("opacity","1")
+				},10000)
+			}else if ($("#input").html()==0 && !isNaN(char)){
+				$("#input").html(char)
+			}else if (isNaN(str.substr(str.length-1,1)) && isNaN(char)){
+				str=str.substr(0,str.length-1) + char;
+				$("#input").text(str);
+			}else
 			$("#input").append(char);
+		
+			// console.log(($("#input").text().length()))
+			// console.log($("#input").html()==0)
+			console.log($("#input").html()==0 && !isNaN(char))
+
 		}
 		
 		
 		
-		//使用道具
 		let useItem=function(){
+		//使用道具函式
 			console.log(this)
 			// console.log(item)
 			addChar($(this).attr('data-char'));
 			$(this).remove();
-			
 		}
-
-	
 		$(".item").on('click',useItem)
 
 		for(let i=0;i<10;i++){
-			//抽出遊戲用牌
+		//抽出遊戲用牌
 			let temp=rand(13)+1;
-			// temp=charArr[temp];
 			console.log("inArray")
 			console.log($.inArray(temp,gameCard))
 			if($.inArray(temp,gameCard)<0){
@@ -189,19 +208,55 @@
 				i--;
 			}
 		}
-		console.log(gameCard)
-		$(function(){
+
+		for(let i=0;i<3;i++){
+		//抽出道具位置
+			let temp=rand(20);
+			console.log("inArray")
+			console.log($.inArray(temp,itemSite))
+			if($.inArray(temp,itemSite)<0){
+				itemSite[itemSite.length]=temp;
+			}else{
+				i--;
+			}
+		}
+		console.log(itemSite)
+
+		let getItem=function(){
+			console.log("hi getItem")
+			$("#itemArea").append(
+				`
+				<div class="item" data-char=c><img src="./card/card-14..jpg" alt=""></div>
+				`)
+		}
+
+		$(function(){ //最初function
 
 			// 產生 20 張卡片
 			for(let i=0;i<20;i++) {
 				$("#cardArea .row").append(/*html*/`<div class="col-3">
-						<div class="pCard">
-							<div class="front"></div>
-							<div class="back"></div>
+					<div class="pCard">
+						<div class="front"></div>
+						<div class="back"></div>
 						</div>
-					</div>
-				`)
-			}
+						</div>
+						`)
+					}
+					
+
+			//放入3個道具
+				for(let i=0;i<3;i++) {
+					console.log($(".pCard").eq(itemSite[i]))
+					$(".pCard").eq(itemSite[i]).append(/*html*/
+					// $(".pCard").eq(itemSite[i]).prepend(/*html*/
+						`<div class=itemMark>
+							<img src="./card/item.png" alt="">
+						</div>`)
+					$(".pCard").eq(itemSite[i]).attr("data-item","1")
+					
+				}
+
+
 			for(let i=0;i<$(".pCard").length;i++){
 				/*
 					每個數字要有兩個才能消除
@@ -253,7 +308,9 @@
 					// 如果兩張一樣，淡出, 並加入數字
 					if($(".open").eq(0).attr("data-card") === $(".open").eq(1).attr("data-card") ){
 						let temp=$(".open").eq(0).attr("data-char");
-						$("#input").append(temp)
+						// $("#input").append(temp)
+						addChar(temp)
+						getItem();
 						$(".open").fadeTo(1000, 0).addClass(".clear");
 
 					}
