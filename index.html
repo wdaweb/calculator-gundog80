@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>卜克計算機</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-	<link rel="stylesheet" href="./bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+	<!-- <link rel="stylesheet" href="./bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous"> -->
 	<style>
 		#game {
 			width: 140vmax;
@@ -134,7 +134,7 @@
 		</div>
 	</div>
 	<script src="./jquery-3.4.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+	<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script> -->
 	<script src="./bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 	<script>
 		let rand = function(n) {
@@ -188,16 +188,26 @@
 
 		}
 		
-		
-		
-		let useItem=function(){
-		//使用道具函式
-			console.log(this)
-			// console.log(item)
-			addChar($(this).attr('data-char'));
-			$(this).remove();
-		}
-		$("#itemArea").on('click',".item",useItem)
+		//道具使用功能
+			let useItem=function(item){
+			//使用道具函式
+				// console.log(item)
+				addChar($(item).attr('data-char'));
+				$(item).remove();
+				addChar($(this).attr('data-char'));
+				$(this).remove();
+			}
+			$("#itemArea").on('click',".item",useItem)
+			//以點擊觸發
+			document.onkeydown = (event) => {
+			//以按鍵觸發
+            	let key = event.key;
+            	if(!isNaN(key) && key<=6 && key >=1) {
+					console.log( parseInt(key)+5)
+                	useItem($('#itemArea').children('div').eq(parseInt(key)+5));
+            	}
+        	}	
+		//道具使用功能完結
 
 		for(let i=0;i<10;i++){
 		//抽出遊戲用牌
@@ -235,6 +245,8 @@
 		}
 
 		$(function(){ //最初function
+
+
 
 			// 產生 20 張卡片
 			for(let i=0;i<20;i++) {
